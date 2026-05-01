@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>AsistTrack-Empleados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Empleados</h1>
+        <a href="/agregar_empleado" class="btn">+ Agregar Empleado</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cedula</th>
+                    <th>Cargo</th>
+                    <th>Valor Dia</th>
+                    <th>Emergencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empleado in empleados %}
+                <tr>
+                    <td>{{ empleado[1] }}</td>
+                    <td>{{ empleado[2] }}</td>
+                    <td>{{ empleado[3] }}</td>
+                    <td>{{ empleado[4] }}</td>
+                    <td>{{ empleado[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

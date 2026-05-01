@@ -58,3 +58,41 @@ button {
 button:hover {
     background-color: #1557a0;
 }
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.btn {
+    background-color: #1a6fc4;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #16213e;
+    color: white;
+}
+
+th {
+    background-color: #1a6fc4;
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #0f3460;
+}
+
+tr:hover {
+    background-color: #0f3460;
+}
