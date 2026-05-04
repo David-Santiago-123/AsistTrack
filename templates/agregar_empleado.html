@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>AsistTrack - Agregar Empleado</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Agregar Empleado</h1>
+        <a href="/empleados" class="btn">← Volver</a>
+        <br><br>
+        <form method="POST" action="/agregar_empleado">
+            <label>Nombre completo:</label>
+            <input type="text" name="nombre" placeholder="Ej: Juan Perez" required>
+
+            <label>Cedula:</label>
+            <input type="text" name="cedula" placeholder="Ej: 1234567890" required>
+
+            <label>Cargo:</label>
+            <input type="text" name="cargo" placeholder="Ej: Soldador" required>
+
+            <label>Valor por dia:</label>
+            <input type="number" name="valor_dia" placeholder="Ej: 80000" required>
+
+            <label>Numero de emergencia:</label>
+            <input type="text" name="numero_emergencia" placeholder="Ej: 3001234567">
+
+            <button type="submit">Guardar Empleado</button>
+        </form>
+    </div>
+</body>
+</html>

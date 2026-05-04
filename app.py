@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -22,6 +22,23 @@ def empleados():
     empleados = cur.fetchall()
     cur.close()
     return render_template('empleados.html', empleados=empleados)
+
+@app.route('/agregar_empleado', methods=['GET', 'POST'])
+def agregar_empleado():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        cedula = request.form['cedula']
+        cargo = request.form['cargo']
+        valor_dia = request.form['valor_dia']
+        numero_emergencia = request.form['numero_emergencia']
+
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO empleados (nombre, cedula, cargo, valor_dia, numero_emergencia) VALUES (%s, %s, %s, %s, %s)",
+                    (nombre, cedula, cargo, valor_dia, numero_emergencia))
+        mysql.connection.commit()
+        cur.close()
+        return redirect('/empleados')
+    return render_template('agregar_empleado.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
