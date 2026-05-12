@@ -104,7 +104,7 @@ def login():
         user = cur.fetchone()
         cur.close()
         if user:
-            return redirect('/empleados')
+            return redirect('/dashboard') ###cambio de redirección de login
         else:
             return render_template('login.html', error='Usuario o contraseña incorrectos')
     return render_template('login.html')
@@ -154,6 +154,33 @@ def reporte_pago_excel():
                      download_name="pago_quincenal.xlsx",
                      as_attachment=True,
                      mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+@app.route('/dashboard')
+def dashboard():
+    cur = mysql.connection.cursor()
+    
+    cur.execute("SELECT COUNT(*) FROM empleados WHERE activo = TRUE")
+    total_empleados = cur.fetchone()[0]
+    
+    cur.execute("SELECT COUNT(*) FROM asistencia WHERE fecha = CURDATE() AND estado = 'presente'")
+    presentes_hoy = cur.fetchone()[0]
+    
+    cur.execute("SELECT COUNT(*) FROM asistencia WHERE fecha = CURDATE() AND estado = 'ausente'")
+    ausentes_hoy = cur.fetchone()[0]
+    
+    cur.execute("""
+        SELECT SUM(CASE WHEN a.estado = 'presente' THEN e.valor_dia ELSE 0 END)
+        FROM asistencia a
+        JOIN empleados e ON a.empleado_id = e.id
+    """)
+    total_pagar = cur.fetchone()[0] or 0
+    cur.close()
+    
+    return render_template('dashboard.html',
+                         total_empleados=total_empleados,
+                         presentes_hoy=presentes_hoy,
+                         ausentes_hoy=ausentes_hoy,
+                         total_pagar=total_pagar)
 
 if __name__ == '__main__':
     app.run(debug=True)

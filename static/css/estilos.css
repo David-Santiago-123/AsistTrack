@@ -113,3 +113,32 @@ nav a {
 nav a:hover {
     text-decoration: underline;
 }
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.card {
+    background-color: #16213e;
+    border-radius: 10px;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    border: 1px solid #1a6fc4;
+}
+
+.card h2 {
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.numero {
+    font-size: 36px;
+    font-weight: bold;
+    color: #1a6fc4;
+}

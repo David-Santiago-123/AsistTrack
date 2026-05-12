@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>AsistTrack - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">🏠 Inicio</a>
+        <a href="/empleados">👥 Empleados</a>
+        <a href="/asistencia">📋 Asistencia</a>
+        <a href="/reporte">📊 Reporte Excel</a>
+        <a href="/reporte_pago">💰 Pago Quincenal</a>
+    </nav>
+    <div class="container">
+        <h1>Panel Principal</h1>
+        <h3>Bienvenido, Admin 👋</h3>
+        <br>
+        <div class="cards">
+            <div class="card">
+                <h2>👥 Total Empleados</h2>
+                <p class="numero">{{ total_empleados }}</p>
+            </div>
+            <div class="card">
+                <h2>✅ Presentes Hoy</h2>
+                <p class="numero">{{ presentes_hoy }}</p>
+            </div>
+            <div class="card">
+                <h2>❌ Ausentes Hoy</h2>
+                <p class="numero">{{ ausentes_hoy }}</p>
+            </div>
+            <div class="card">
+                <h2>💰 Total a Pagar</h2>
+                <p class="numero">${{ total_pagar }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
