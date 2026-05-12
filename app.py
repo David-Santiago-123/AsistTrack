@@ -109,5 +109,51 @@ def login():
             return render_template('login.html', error='Usuario o contraseña incorrectos')
     return render_template('login.html')
 
+@app.route('/reporte_pago')
+def reporte_pago():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT e.nombre, e.cargo,
+               SUM(CASE WHEN a.estado = 'presente' THEN 1 ELSE 0 END) as dias_trabajados,
+               e.valor_dia,
+               SUM(CASE WHEN a.estado = 'presente' THEN 1 ELSE 0 END) * e.valor_dia as total
+        FROM empleados e
+        LEFT JOIN asistencia a ON e.id = a.empleado_id
+        GROUP BY e.id, e.nombre, e.cargo, e.valor_dia
+    """)
+    pagos = cur.fetchall()
+    cur.close()
+    return render_template('reporte_pago.html', pagos=pagos)
+
+@app.route('/reporte_pago_excel')
+def reporte_pago_excel():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT e.nombre, e.cargo,
+               SUM(CASE WHEN a.estado = 'presente' THEN 1 ELSE 0 END) as dias_trabajados,
+               e.valor_dia,
+               SUM(CASE WHEN a.estado = 'presente' THEN 1 ELSE 0 END) * e.valor_dia as total
+        FROM empleados e
+        LEFT JOIN asistencia a ON e.id = a.empleado_id
+        GROUP BY e.id, e.nombre, e.cargo, e.valor_dia
+    """)
+    pagos = cur.fetchall()
+    cur.close()
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Pago Quincenal"
+    ws.append(["Nombre", "Cargo", "Dias Trabajados", "Valor Dia", "Total a Pagar"])
+    for p in pagos:
+        ws.append([p[0], p[1], p[2], float(p[3]), float(p[4])])
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    return send_file(output,
+                     download_name="pago_quincenal.xlsx",
+                     as_attachment=True,
+                     mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
 if __name__ == '__main__':
     app.run(debug=True)

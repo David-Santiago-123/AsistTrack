@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>AsistTrack - Reporte de Pago</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">🏠 Inicio</a>
+        <a href="/empleados">👥 Empleados</a>
+        <a href="/asistencia">📋 Asistencia</a>
+        <a href="/reporte">📊 Reporte Excel</a>
+        <a href="/reporte_pago">💰 Pago Quincenal</a>
+    </nav>
+    <div class="container">
+        <h1>Reporte de Pago Quincenal</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cargo</th>
+                    <th>Días Trabajados</th>
+                    <th>Valor por Día</th>
+                    <th>Total a Pagar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pago in pagos %}
+                <tr>
+                    <td>{{ pago[0] }}</td>
+                    <td>{{ pago[1] }}</td>
+                    <td>{{ pago[2] }}</td>
+                    <td>${{ pago[3] }}</td>
+                    <td>${{ pago[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <a href="/reporte_pago_excel" class="btn">📥 Descargar Excel</a>
+    </div>
+</body>
+</html>
