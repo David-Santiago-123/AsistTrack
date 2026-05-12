@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
 <body>
+
+    <nav>
+     <a href="/">🏠 Inicio</a>
+     <a href="/empleados">👥 Empleados</a>
+     <a href="/asistencia">📋 Asistencia</a>
+     <a href="/reporte">📊 Reporte Excel</a>
+    </nav>
+
     <div class="container">
         <h1>Registro de Asistencia</h1>
         <h3>Fecha: {{ fecha }}</h3>

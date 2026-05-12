@@ -96,3 +96,20 @@ td {
 tr:hover {
     background-color: #0f3460;
 }
+
+nav {
+    background-color: #1a6fc4;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    font-size: 16px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}

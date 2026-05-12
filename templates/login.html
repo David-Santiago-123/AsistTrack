@@ -7,15 +7,19 @@
 </head>
 <body>
     <div class="login-container">
-     <h1>Bienvenido a AsistTrack</h1>
-     <form>
-         <label>Usuario:</label>
-         <input type="text" placeholder="Escribe tu usuario">
-         <br><br>
-         <label>Contraseña:</label>
-         <input type="password" placeholder="Escribe tu contraseña">
-         <br><br>
-         <button type="submit">Entrar</button>
+        <h1>Bienvenido a AsistTrack</h1>
+        <form method="POST" action="/login">
+            <label>Usuario:</label>
+            <input type="text" name="usuario" placeholder="Escribe tu usuario">
+
+            <label>Contraseña:</label>
+            <input type="password" name="contrasena" placeholder="Escribe tu contraseña">
+
+            {% if error %}
+            <p style="color: red;">{{ error }}</p>
+            {% endif %}
+
+            <button type="submit">Entrar</button>
         </form>
     </div>
 </body>

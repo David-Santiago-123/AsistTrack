@@ -17,7 +17,7 @@ mysql = MySQL(app)
 
 @app.route('/')
 def inicio():
-    return render_template('login.html')
+    return redirect('/login')
 
 @app.route('/empleados')
 def empleados():
@@ -93,6 +93,21 @@ def reporte():
                      download_name="reporte_asistencia.xlsx",
                      as_attachment=True,
                      mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        contrasena = request.form['contrasena']
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM usuarios WHERE usuario=%s AND contrasena=%s", (usuario, contrasena))
+        user = cur.fetchone()
+        cur.close()
+        if user:
+            return redirect('/empleados')
+        else:
+            return render_template('login.html', error='Usuario o contraseña incorrectos')
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
