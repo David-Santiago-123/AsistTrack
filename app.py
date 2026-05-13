@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from flask_mysqldb import MySQL
 from datetime import date
 import openpyxl
@@ -6,6 +6,7 @@ from io import BytesIO
 from flask import send_file
 
 app = Flask(__name__)
+app.secret_key = 'asisttrack2026'
 
 # Configuracion de la base de datos
 app.config['MYSQL_HOST'] = 'localhost'
@@ -17,10 +18,14 @@ mysql = MySQL(app)
 
 @app.route('/')
 def inicio():
+    if 'usuario' in session:
+        return redirect('/dashboard')
     return redirect('/login')
 
 @app.route('/empleados')
 def empleados():
+    if 'usuario' not in session:
+         return redirect('/login')   #listo la redireccion a login
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM empleados")
     empleados = cur.fetchall()
@@ -29,6 +34,8 @@ def empleados():
 
 @app.route('/agregar_empleado', methods=['GET', 'POST'])
 def agregar_empleado():
+    if 'usuario' not in session:
+        return redirect('/login') #listo la redireccion a login
     if request.method == 'POST':
         nombre = request.form['nombre']
         cedula = request.form['cedula']
@@ -46,6 +53,8 @@ def agregar_empleado():
 
 @app.route('/asistencia', methods=['GET', 'POST'])
 def asistencia():
+    if 'usuario' not in session:
+        return redirect('/login')  #listo la redireccion a login
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM empleados WHERE activo = TRUE")
     empleados = cur.fetchall()
@@ -104,13 +113,16 @@ def login():
         user = cur.fetchone()
         cur.close()
         if user:
-            return redirect('/dashboard') ###cambio de redirección de login
+            session['usuario'] = usuario
+            return redirect('/dashboard')
         else:
             return render_template('login.html', error='Usuario o contraseña incorrectos')
     return render_template('login.html')
 
 @app.route('/reporte_pago')
 def reporte_pago():
+    if 'usuario' not in session:
+        return redirect('/login')  #listo la redirección a login 
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT e.nombre, e.cargo,
@@ -157,6 +169,8 @@ def reporte_pago_excel():
 
 @app.route('/dashboard')
 def dashboard():
+    if 'usuario' not in session:
+        return redirect('/login') #listo la redireccion a login
     cur = mysql.connection.cursor()
     
     cur.execute("SELECT COUNT(*) FROM empleados WHERE activo = TRUE")
@@ -181,6 +195,11 @@ def dashboard():
                          presentes_hoy=presentes_hoy,
                          ausentes_hoy=ausentes_hoy,
                          total_pagar=total_pagar)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/login')
 
 if __name__ == '__main__':
     app.run(debug=True)
