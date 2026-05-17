@@ -7,13 +7,18 @@
 </head>
 <body>
 
-    <nav>
-     <a href="/">🏠 Inicio</a>
-     <a href="/empleados">👥 Empleados</a>
-     <a href="/asistencia">📋 Asistencia</a>
-     <a href="/reporte_pago">💰 Pago Quincenal</a>
-     <a href="/logout" style="margin-left: auto; color: #ff4444;">🚪 Cerrar Sesión</a>
+<div class="layout">
+<aside class="sidebar">
+    <div class="sidebar-brand">AsistTrack</div>
+    <nav class="sidebar-nav">
+        <a href="/" class="nav-link">🏠 Inicio</a>
+        <a href="/asistencia" class="nav-link">📋 Asistencia</a>
+        <a href="/empleados" class="nav-link">👥 Empleados</a>
+        <a href="/reporte_pago" class="nav-link">💰 Pago Quincenal</a>
     </nav>
+    <a href="/logout" class="sidebar-logout">🚪 Cerrar Sesión</a>
+</aside>
+<main class="main-content">
 
     <div class="container">
         <h1>Registro de Asistencia</h1>
@@ -21,32 +26,37 @@
         <a href="/empleados" class="btn">← Empleados</a>
         <br><br>
         <form method="POST" action="/asistencia">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Cargo</th>
-                        <th>Asistencia</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for empleado in empleados %}
-                    <tr>
-                        <td>{{ empleado[1] }}</td>
-                        <td>{{ empleado[3] }}</td>
-                        <td>
-                            <select name="asistencia_{{ empleado[0] }}">
-                                <option value="presente">✅ Presente</option>
-                                <option value="ausente">❌ Ausente</option>
-                            </select>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Cargo</th>
+                            <th>Asistencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empleado in empleados %}
+                        <tr>
+                            <td>{{ empleado[1] }}</td>
+                            <td>{{ empleado[3] }}</td>
+                            <td>
+                                <select name="asistencia_{{ empleado[0] }}">
+                                    <option value="presente">✅ Presente</option>
+                                    <option value="ausente">❌ Ausente</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             <br>
             <button type="submit">Guardar Asistencia</button>
         </form>
     </div>
+
+</main>
+</div>
 </body>
 </html>

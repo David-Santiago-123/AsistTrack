@@ -6,15 +6,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
 <body>
-    <nav>
-        <a href="/">🏠 Inicio</a>
-        <a href="/empleados">👥 Empleados</a>
-        <a href="/asistencia">📋 Asistencia</a>
-        <a href="/reporte_pago">💰 Pago Quincenal</a>
-        <a href="/logout" style="margin-left: auto; color: #ff4444;">🚪 Cerrar Sesión</a>
-    </nav>
 
-    <br>
+<div class="layout">
+<aside class="sidebar">
+    <div class="sidebar-brand">AsistTrack</div>
+    <nav class="sidebar-nav">
+        <a href="/" class="nav-link">🏠 Inicio</a>
+        <a href="/asistencia" class="nav-link">📋 Asistencia</a>
+        <a href="/empleados" class="nav-link">👥 Empleados</a>
+        <a href="/reporte_pago" class="nav-link">💰 Pago Quincenal</a>
+    </nav>
+    <a href="/logout" class="sidebar-logout">🚪 Cerrar Sesión</a>
+</aside>
+<main class="main-content">
+
     <div class="card" style="width: 100%; text-align: left; padding: 20px;">
         <h2>📐 Fórmula Matemática Aplicada</h2>
         <p style="color: white; margin-top: 10px;">
@@ -25,32 +30,40 @@
         </p>
     </div>
 
+    <br>
+
     <div class="container">
         <h1>Reporte de Pago Quincenal</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Cargo</th>
-                    <th>Días Trabajados</th>
-                    <th>Valor por Día</th>
-                    <th>Total a Pagar</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for pago in pagos %}
-                <tr>
-                    <td>{{ pago[0] }}</td>
-                    <td>{{ pago[1] }}</td>
-                    <td>{{ pago[2] }}</td>
-                    <td>${{ pago[3] }}</td>
-                    <td>${{ pago[4] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Días Trabajados</th>
+                        <th>Valor por Día</th>
+                        <th>Total a Pagar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pago in pagos %}
+                    <tr>
+                        <td>{{ pago[0] }}</td>
+                        <td>{{ pago[1] }}</td>
+                        <td>{{ pago[2] }}</td>
+                        <td>${{ pago[3] }}</td>
+                        <td>${{ pago[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         <br>
         <a href="/reporte_pago_excel" class="btn">📥 Descargar Excel</a>
     </div>
+
+</main>
+</div>
 </body>
 </html>

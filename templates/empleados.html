@@ -7,39 +7,50 @@
 </head>
 <body>
 
-    <nav>
-     <a href="/">🏠 Inicio</a>
-     <a href="/empleados">👥 Empleados</a>
-     <a href="/asistencia">📋 Asistencia</a>
-     <a href="/reporte_pago">💰 Pago Quincenal</a>
-     <a href="/logout" style="margin-left: auto; color: #ff4444;">🚪 Cerrar Sesión</a>
+<div class="layout">
+<aside class="sidebar">
+    <div class="sidebar-brand">AsistTrack</div>
+    <nav class="sidebar-nav">
+        <a href="/" class="nav-link">🏠 Inicio</a>
+        <a href="/asistencia" class="nav-link">📋 Asistencia</a>
+        <a href="/empleados" class="nav-link">👥 Empleados</a>
+        <a href="/reporte_pago" class="nav-link">💰 Pago Quincenal</a>
     </nav>
+    <a href="/logout" class="sidebar-logout">🚪 Cerrar Sesión</a>
+</aside>
+<main class="main-content">
 
     <div class="container">
         <h1>Empleados</h1>
         <a href="/agregar_empleado" class="btn">+ Agregar Empleado</a>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Cedula</th>
-                    <th>Cargo</th>
-                    <th>Valor Dia</th>
-                    <th>Emergencia</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for empleado in empleados %}
-                <tr>
-                    <td>{{ empleado[1] }}</td>
-                    <td>{{ empleado[2] }}</td>
-                    <td>{{ empleado[3] }}</td>
-                    <td>{{ empleado[4] }}</td>
-                    <td>{{ empleado[5] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cedula</th>
+                        <th>Cargo</th>
+                        <th>Valor Dia</th>
+                        <th>Emergencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for empleado in empleados %}
+                    <tr>
+                        <td>{{ empleado[1] }}</td>
+                        <td>{{ empleado[2] }}</td>
+                        <td>{{ empleado[3] }}</td>
+                        <td>{{ empleado[4] }}</td>
+                        <td>{{ empleado[5] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+
+</main>
+</div>
 </body>
 </html>

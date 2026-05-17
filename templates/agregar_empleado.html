@@ -7,18 +7,24 @@
 </head>
 <body>
 
-    <nav>
-     <a href="/">🏠 Inicio</a>
-     <a href="/empleados">👥 Empleados</a>
-     <a href="/asistencia">📋 Asistencia</a>
-     <a href="/reporte_pago">💰 Pago Quincenal</a>
-     <a href="/logout" style="margin-left: auto; color: #ff4444;">🚪 Cerrar Sesión</a>
+<div class="layout">
+<aside class="sidebar">
+    <div class="sidebar-brand">AsistTrack</div>
+    <nav class="sidebar-nav">
+        <a href="/" class="nav-link">🏠 Inicio</a>
+        <a href="/asistencia" class="nav-link">📋 Asistencia</a>
+        <a href="/empleados" class="nav-link">👥 Empleados</a>
+        <a href="/reporte_pago" class="nav-link">💰 Pago Quincenal</a>
     </nav>
+    <a href="/logout" class="sidebar-logout">🚪 Cerrar Sesión</a>
+</aside>
+<main class="main-content">
 
-    <div class="container">
-        <h1>Agregar Empleado</h1>
-        <a href="/empleados" class="btn">← Volver</a>
-        <br><br>
+    <div class="form-card">
+        <div class="page-header">
+            <h1>Agregar Empleado</h1>
+            <a href="/empleados" class="btn btn-secondary">← Volver</a>
+        </div>
         <form method="POST" action="/agregar_empleado">
             <label>Nombre completo:</label>
             <input type="text" name="nombre" placeholder="Ej: Juan Perez" required>
@@ -38,5 +44,8 @@
             <button type="submit">Guardar Empleado</button>
         </form>
     </div>
+
+</main>
+</div>
 </body>
 </html>

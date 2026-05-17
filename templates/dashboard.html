@@ -6,13 +6,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
 </head>
 <body>
-    <nav>
-        <a href="/">🏠 Inicio</a>
-        <a href="/empleados">👥 Empleados</a>
-        <a href="/asistencia">📋 Asistencia</a>
-        <a href="/reporte_pago">💰 Pago Quincenal</a>
-        <a href="/logout" style="margin-left: auto; color: #ff4444;">🚪 Cerrar Sesión</a>
+
+<div class="layout">
+<aside class="sidebar">
+    <div class="sidebar-brand">AsistTrack</div>
+    <nav class="sidebar-nav">
+        <a href="/" class="nav-link">🏠 Inicio</a>
+        <a href="/asistencia" class="nav-link">📋 Asistencia</a>
+        <a href="/empleados" class="nav-link">👥 Empleados</a>
+        <a href="/reporte_pago" class="nav-link">💰 Pago Quincenal</a>
     </nav>
+    <a href="/logout" class="sidebar-logout">🚪 Cerrar Sesión</a>
+</aside>
+<main class="main-content">
+
     <div class="container">
         <h1>Panel Principal</h1>
         <h3>Bienvenido, Admin 👋</h3>
@@ -36,5 +43,8 @@
             </div>
         </div>
     </div>
+
+</main>
+</div>
 </body>
 </html>
