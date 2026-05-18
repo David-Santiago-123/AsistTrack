@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambiar Contraseña</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body class="login-page">
+<div class="login-container">
+    <h1>Cambiar Contraseña</h1>
+    <p style="color:#64748b; margin-bottom:20px; font-size:13px;">Crea una contraseña segura para continuar</p>
+    {% if error %}
+    <p style="color:red; margin-bottom:15px; font-size:13px;">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label>Nueva contraseña:</label>
+        <input type="password" name="nueva_contrasena" placeholder="Ej: Jesus123_*" required>
+        <button type="submit">Guardar</button>
+    </form>
+</div>
+</body>
+</html>

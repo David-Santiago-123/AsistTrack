@@ -5,10 +5,12 @@ import openpyxl
 from io import BytesIO
 from flask import send_file
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash, check_password_hash
+import re
 import os
 
 load_dotenv()
-print(os.getenv('MYSQL_PASSWORD'))
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -113,14 +115,15 @@ def login():
         usuario = request.form['usuario']
         contrasena = request.form['contrasena']
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM usuarios WHERE usuario=%s AND contrasena=%s", (usuario, contrasena))
+        cur.execute("SELECT * FROM usuarios WHERE usuario=%s", (usuario,))
         user = cur.fetchone()
         cur.close()
-        if user:
+        if user and check_password_hash(user[2], contrasena):
             session['usuario'] = usuario
+            if user[3] == 1:  # primer_login
+                return redirect('/cambiar_contrasena')
             return redirect('/dashboard')
-        else:
-            return render_template('login.html', error='Usuario o contraseña incorrectos')
+        return render_template('login.html', error='Usuario o contraseña incorrectos')
     return render_template('login.html')
 
 @app.route('/reporte_pago')
@@ -204,6 +207,25 @@ def dashboard():
 def logout():
     session.clear()
     return redirect('/login')
+
+@app.route('/cambiar_contrasena', methods=['GET', 'POST'])
+def cambiar_contrasena():
+    if 'usuario' not in session:
+        return redirect('/login')
+    if request.method == 'POST':
+        nueva = request.form['nueva_contrasena']
+        regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_\-*])[A-Za-z\d!@#$%^&*_\-*]{8,}$'
+        if not re.match(regex, nueva):
+            return render_template('cambiar_contrasena.html',
+                error='Mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial (!@#$%^&*_-)')
+        hash_nueva = generate_password_hash(nueva)
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE usuarios SET contrasena=%s, primer_login=0 WHERE usuario=%s",
+                    (hash_nueva, session['usuario']))
+        mysql.connection.commit()
+        cur.close()
+        return redirect('/dashboard')
+    return render_template('cambiar_contrasena.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
