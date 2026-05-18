@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 from flask_mysqldb import MySQL
 from datetime import date
 import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from io import BytesIO
 from flask import send_file
 from dotenv import load_dotenv
@@ -162,9 +163,41 @@ def reporte_pago_excel():
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Pago Quincenal"
-    ws.append(["Nombre", "Cargo", "Dias Trabajados", "Valor Dia", "Total a Pagar"])
+
+    # Estilos
+    header_fill = PatternFill("solid", fgColor="2C3E50")
+    header_font = Font(name="Arial", size=11, bold=True, color="FFFFFF")
+    center = Alignment(horizontal="center")
+    left   = Alignment(horizontal="left")
+    border = Border(
+        left=Side(style="thin", color="BDC3C7"),
+        right=Side(style="thin", color="BDC3C7"),
+        top=Side(style="thin", color="BDC3C7"),
+        bottom=Side(style="thin", color="BDC3C7")
+    )
+
+    # Encabezados
+    headers = ["Nombre", "Cargo", "Dias Trabajados", "Valor Dia", "Total a Pagar"]
+    ws.append(headers)
+    for col, cell in enumerate(ws[1], 1):
+        cell.fill   = header_fill
+        cell.font   = header_font
+        cell.alignment = center
+        cell.border = border
+
+    # Datos
     for p in pagos:
         ws.append([p[0], p[1], p[2], float(p[3]), float(p[4])])
+
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=1, max_col=5):
+        for col, cell in enumerate(row, 1):
+            cell.border    = border
+            cell.alignment = left if col <= 2 else center
+
+    # Auto-ancho
+    for col in ws.columns:
+        max_len = max((len(str(cell.value)) for cell in col if cell.value), default=10)
+        ws.column_dimensions[col[0].column_letter].width = max_len + 4
 
     output = BytesIO()
     wb.save(output)
