@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import re
 import os
 
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 
 app = Flask(__name__)
