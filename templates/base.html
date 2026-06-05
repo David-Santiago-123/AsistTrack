@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsistTrack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay"></div>
+<button class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+</button>
+
+<div class="layout">
+<aside class="sidebar">
+    <div class="sidebar-brand">AsistTrack</div>
+    <nav class="sidebar-nav">
+        <a href="/" class="nav-link">🏠 Inicio</a>
+        <a href="/asistencia" class="nav-link">📋 Asistencia</a>
+        <a href="/empleados" class="nav-link">👥 Empleados</a>
+        <a href="/reporte_pago" class="nav-link">💰 Pago Quincenal</a>
+    </nav>
+    <a href="/logout" class="sidebar-logout">🚪 Cerrar Sesión</a>
+</aside>
+<main class="main-content">
+    {% block content %}{% endblock %}
+</main>
+</div>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.querySelector('.sidebar');
+const overlay = document.getElementById('overlay');
+hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+});
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+});
+</script>
+</body>
+</html>

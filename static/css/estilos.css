@@ -30,6 +30,44 @@ body {
 /* LAYOUT */
 .layout { display: flex; min-height: 100vh; }
 
+/* HAMBURGUESA */
+.hamburger {
+    display: none;
+    position: fixed;
+    top: 14px; left: 14px;
+    z-index: 200;
+    background: var(--navy);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    width: auto;
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+/* OVERLAY */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+}
+
+.sidebar-overlay.active { display: block; }
+
 /* SIDEBAR */
 .sidebar {
     width: var(--sidebar-w);
@@ -40,7 +78,8 @@ body {
     position: fixed;
     top: 0; left: 0;
     height: 100vh;
-    z-index: 100;
+    z-index: 160;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-brand {
@@ -204,11 +243,11 @@ button[type="submit"], .btn-full {
 /* TABLA */
 .table-wrapper {
     background-color: var(--surface); border-radius: 16px;
-    border: 1.5px solid var(--border); overflow: hidden;
+    border: 1.5px solid var(--border); overflow-x: auto;
     box-shadow: 0 2px 10px rgba(26, 39, 68, 0.05);
 }
 
-table { width: 100%; border-collapse: collapse; }
+table { width: 100%; border-collapse: collapse; min-width: 400px; }
 
 th {
     background-color: #f8fafc; color: var(--muted);
@@ -263,9 +302,29 @@ body.login-page {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-    .sidebar { width: 64px; padding: 20px 8px; }
-    .sidebar-brand { font-size: 0; }
-    .main-content { margin-left: 64px; padding: 24px 20px; }
+    .hamburger { display: flex; }
+
+    .sidebar {
+        transform: translateX(-100%);
+        width: 240px;
+        padding-top: 60px;
+    }
+
+    .sidebar.open { transform: translateX(0); }
+
+    .main-content {
+        margin-left: 0;
+        padding: 20px 16px;
+        padding-top: 60px;
+    }
+
     .cards { grid-template-columns: 1fr; }
-    .app-title { font-size: 36px; }
+    .app-title { font-size: 32px; }
+    .numero { font-size: 40px; }
+
+    .form-card { padding: 24px 16px; }
+
+    th, td { padding: 10px 12px; font-size: 13px; }
+
+    .login-container { width: 92%; padding: 32px 20px; }
 }

@@ -1,37 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>AsistTrack - Reporte de Pago</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'base.html' %}
 
-<div class="layout">
-<aside class="sidebar">
-    <div class="sidebar-brand">AsistTrack</div>
-    <nav class="sidebar-nav">
-        <a href="/" class="nav-link">🏠 Inicio</a>
-        <a href="/asistencia" class="nav-link">📋 Asistencia</a>
-        <a href="/empleados" class="nav-link">👥 Empleados</a>
-        <a href="/reporte_pago" class="nav-link">💰 Pago Quincenal</a>
-    </nav>
-    <a href="/logout" class="sidebar-logout">🚪 Cerrar Sesión</a>
-</aside>
-<main class="main-content">
-
-    <div class="card" style="width: 100%; text-align: left; padding: 20px;">
-        <h2>📐 Fórmula Matemática Aplicada</h2>
-        <p style="color: white; margin-top: 10px;">
-            <strong>Total a Pagar</strong> = Días Trabajados × Valor por Día
-        </p>
-        <p style="color: #1a6fc4; margin-top: 5px;">
-            Ejemplo: Si un empleado trabaja 10 días a $75.000/día → 10 × $75.000 = <strong>$750.000</strong>
-        </p>
-    </div>
-
-    <br>
-
+{% block content %}
     <div class="container">
         <h1>Reporte de Pago Quincenal</h1>
         
@@ -62,8 +31,4 @@
         <br>
         <a href="/reporte_pago_excel" class="btn">📥 Descargar Excel</a>
     </div>
-
-</main>
-</div>
-</body>
-</html>
+{% endblock %}

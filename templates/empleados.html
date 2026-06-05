@@ -1,25 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>AsistTrack-Empleados</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
-</head>
-<body>
+{% extends 'base.html' %}
 
-<div class="layout">
-<aside class="sidebar">
-    <div class="sidebar-brand">AsistTrack</div>
-    <nav class="sidebar-nav">
-        <a href="/" class="nav-link">🏠 Inicio</a>
-        <a href="/asistencia" class="nav-link">📋 Asistencia</a>
-        <a href="/empleados" class="nav-link">👥 Empleados</a>
-        <a href="/reporte_pago" class="nav-link">💰 Pago Quincenal</a>
-    </nav>
-    <a href="/logout" class="sidebar-logout">🚪 Cerrar Sesión</a>
-</aside>
-<main class="main-content">
-
+{% block content %}
     <div class="container">
         <h1>Empleados</h1>
         <a href="/agregar_empleado" class="btn">+ Agregar Empleado</a>
@@ -49,8 +30,4 @@
             </table>
         </div>
     </div>
-
-</main>
-</div>
-</body>
-</html>
+{% endblock %}

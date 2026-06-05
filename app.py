@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
 import os
+from datetime import date, datetime
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
@@ -58,27 +59,18 @@ def agregar_empleado():
         return redirect('/empleados')
     return render_template('agregar_empleado.html')
 
-@app.route('/asistencia', methods=['GET', 'POST'])
+@app.route('/asistencia', methods=['GET'])
 def asistencia():
     if 'usuario' not in session:
-        return redirect('/login')  #listo la redireccion a login
+        return redirect('/login')
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM empleados WHERE activo = TRUE")
     empleados = cur.fetchall()
+    cur.execute("SELECT empleado_id FROM asistencia WHERE fecha = CURDATE()")
+    registrados_hoy = [row[0] for row in cur.fetchall()]
     cur.close()
-    
-    if request.method == 'POST':
-        fecha_hoy = date.today()
-        cur = mysql.connection.cursor()
-        for empleado in empleados:
-            estado = request.form.get(f'asistencia_{empleado[0]}')
-            cur.execute("INSERT INTO asistencia (empleado_id, fecha, estado) VALUES (%s, %s, %s)",
-                       (empleado[0], fecha_hoy, estado))
-        mysql.connection.commit()
-        cur.close()
-        return redirect('/asistencia')
-    
-    return render_template('asistencia.html', empleados=empleados, fecha=date.today())
+    return render_template('asistencia.html', empleados=empleados,
+                         registrados_hoy=registrados_hoy, fecha=date.today())
 
 @app.route('/reporte')
 def reporte():
@@ -260,5 +252,23 @@ def cambiar_contrasena():
         return redirect('/dashboard')
     return render_template('cambiar_contrasena.html')
 
+@app.route('/guardar_asistencia/<int:empleado_id>', methods=['POST'])
+def guardar_asistencia(empleado_id):
+    if 'usuario' not in session:
+        return redirect('/login')
+    estado = request.form.get('estado')
+    hora_llegada = datetime.now().time() if estado == 'tarde' else None
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute(
+            "INSERT INTO asistencia (empleado_id, fecha, estado, hora_llegada) VALUES (%s, CURDATE(), %s, %s)",
+            (empleado_id, estado, hora_llegada)
+        )
+        mysql.connection.commit()
+        cur.close()
+    except Exception:
+        mysql.connection.rollback()
+    return redirect('/asistencia')
+
 if __name__ == '__main__':
-    app.run(debug=True)
+   app.run(debug=True, host='0.0.0.0')
