@@ -1,29 +1,35 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 from flask_mysqldb import MySQL
-from datetime import date
+from datetime import date, datetime, timedelta
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from io import BytesIO
 from flask import send_file
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
 import re
 import os
-from datetime import date, datetime
 
-load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
-
+load_dotenv(os.path.join(os.path.dirname(__file__), 'AsistTrack', '.env'))
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
-
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 mysql = MySQL(app)
-
+mail = Mail(app)
+s = URLSafeTimedSerializer(app.secret_key)
 @app.route('/')
 def inicio():
     if 'usuario' in session:
@@ -110,13 +116,38 @@ def login():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM usuarios WHERE usuario=%s", (usuario,))
         user = cur.fetchone()
-        cur.close()
-        if user and check_password_hash(user[2], contrasena):
+
+        if not user:
+            cur.close()
+            return render_template('login.html', error='Usuario o contraseña incorrectos')
+
+        if user[6] and user[6] > datetime.now():
+            minutos = int((user[6] - datetime.now()).seconds / 60) + 1
+            cur.close()
+            return render_template('login.html', error=f'Cuenta bloqueada. Intenta en {minutos} minutos.')
+
+        if check_password_hash(user[2], contrasena):
+            cur.execute("UPDATE usuarios SET intentos_fallidos=0, bloqueado_hasta=NULL WHERE usuario=%s", (usuario,))
+            mysql.connection.commit()
+            cur.close()
             session['usuario'] = usuario
-            if user[3] == 1:  # primer_login
+            if user[3] == 1:
                 return redirect('/cambiar_contrasena')
             return redirect('/dashboard')
-        return render_template('login.html', error='Usuario o contraseña incorrectos')
+        else:
+            intentos = int(user[5] or 0) + 1
+            if intentos >= 3:
+                bloqueo = datetime.now() + timedelta(minutes=15)
+                cur.execute("UPDATE usuarios SET intentos_fallidos=%s, bloqueado_hasta=%s WHERE usuario=%s",
+                            (intentos, bloqueo, usuario))
+                cur.close()
+                mysql.connection.commit()
+                return render_template('login.html', error='Cuenta bloqueada por 15 minutos.')
+            else:
+                cur.execute("UPDATE usuarios SET intentos_fallidos=%s WHERE usuario=%s", (intentos, usuario))
+                mysql.connection.commit()
+                cur.close()
+                return render_template('login.html', error=f'Contraseña incorrecta. Te quedan {3 - intentos} intentos.')
     return render_template('login.html')
 
 @app.route('/reporte_pago')
@@ -269,6 +300,46 @@ def guardar_asistencia(empleado_id):
     except Exception:
         mysql.connection.rollback()
     return redirect('/asistencia')
+
+@app.route('/recuperar', methods=['GET', 'POST'])
+def recuperar():
+    if request.method == 'POST':
+        correo = request.form['correo']
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM usuarios WHERE correo=%s", (correo,))
+        user = cur.fetchone()
+        cur.close()
+        if user:
+            token = s.dumps(correo, salt='recuperar-contrasena')
+            link = f"http://192.168.1.89:5000/restablecer/{token}"
+            msg = Message('Recuperar contraseña - AsistTrack',
+                         sender=os.getenv('MAIL_USERNAME'),
+                         recipients=[correo])
+            msg.body = f'Haz clic aquí para restablecer tu contraseña:\n{link}\n\nExpira en 10 minutos.'
+            mail.send(msg)
+        return render_template('recuperar.html', mensaje='Si el correo existe recibirás un enlace en breve.')
+    return render_template('recuperar.html')
+
+@app.route('/restablecer/<token>', methods=['GET', 'POST'])
+def restablecer(token):
+    try:
+        correo = s.loads(token, salt='recuperar-contrasena', max_age=600)
+    except Exception:
+        return render_template('login.html', error='El enlace expiró o es inválido.')
+    if request.method == 'POST':
+        nueva = request.form['nueva_contrasena']
+        regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_\-*])[A-Za-z\d!@#$%^&*_\-*]{8,}$'
+        if not re.match(regex, nueva):
+            return render_template('restablecer.html', token=token,
+                error='Mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.')
+        hash_nueva = generate_password_hash(nueva)
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE usuarios SET contrasena=%s, intentos_fallidos=0, bloqueado_hasta=NULL WHERE correo=%s",
+                    (hash_nueva, correo))
+        mysql.connection.commit()
+        cur.close()
+        return redirect('/login')
+    return render_template('restablecer.html', token=token)
 
 if __name__ == '__main__':
    app.run(debug=True, host='0.0.0.0')

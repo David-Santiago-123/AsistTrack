@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsistTrack - Nueva Contraseña</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body class="login-page">
+<div class="login-container">
+    <h1>Nueva Contraseña</h1>
+    <p class="subtitle">Mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial</p>
+    {% if error %}
+    <p style="color: var(--danger); margin-bottom: 15px; font-size: 14px;">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label>Nueva contraseña:</label>
+        <input type="password" name="nueva_contrasena" placeholder="Ej: Admin123_*" required>
+        <button type="submit">Guardar contraseña</button>
+    </form>
+</div>
+</body>
+</html>
