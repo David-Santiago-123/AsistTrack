@@ -21,9 +21,9 @@ app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
@@ -311,7 +311,7 @@ def recuperar():
         cur.close()
         if user:
             token = s.dumps(correo, salt='recuperar-contrasena')
-            link = f"http://192.168.1.89:5000/restablecer/{token}"
+            link = link = url_for('restablecer', token=token, _external=True)
             msg = Message('Recuperar contraseña - AsistTrack',
                          sender=os.getenv('MAIL_USERNAME'),
                          recipients=[correo])
