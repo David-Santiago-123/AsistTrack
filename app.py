@@ -341,5 +341,48 @@ def restablecer(token):
         return redirect('/login')
     return render_template('restablecer.html', token=token)
 
+@app.route('/editar_empleado/<int:id>', methods=['GET', 'POST'])
+def editar_empleado(id):
+    if 'usuario' not in session:
+        return redirect('/login')
+    cur = mysql.connection.cursor()
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        cedula = request.form['cedula']
+        cargo = request.form['cargo']
+        valor_dia = request.form['valor_dia']
+        numero_emergencia = request.form['numero_emergencia']
+        cur.execute("""UPDATE empleados SET nombre=%s, cedula=%s, cargo=%s, 
+                    valor_dia=%s, numero_emergencia=%s WHERE id=%s""",
+                    (nombre, cedula, cargo, valor_dia, numero_emergencia, id))
+        mysql.connection.commit()
+        cur.close()
+        return redirect('/empleados')
+    cur.execute("SELECT * FROM empleados WHERE id=%s", (id,))
+    empleado = cur.fetchone()
+    cur.close()
+    return render_template('editar_empleado.html', empleado=empleado)
+
+@app.route('/suspender_empleado/<int:id>', methods=['POST'])
+def suspender_empleado(id):
+    if 'usuario' not in session:
+        return redirect('/login')
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE empleados SET activo = NOT activo WHERE id=%s", (id,))
+    mysql.connection.commit()
+    cur.close()
+    return redirect('/empleados')
+
+@app.route('/eliminar_empleado/<int:id>', methods=['POST'])
+def eliminar_empleado(id):
+    if 'usuario' not in session:
+        return redirect('/login')
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM asistencia WHERE empleado_id=%s", (id,))
+    cur.execute("DELETE FROM empleados WHERE id=%s", (id,))
+    mysql.connection.commit()
+    cur.close()
+    return redirect('/empleados')
+
 if __name__ == '__main__':
    app.run(debug=True, host='0.0.0.0')

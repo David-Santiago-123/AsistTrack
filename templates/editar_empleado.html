@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="form-card">
+    <div class="page-header">
+        <h1>Editar Empleado</h1>
+        <a href="/empleados" class="btn btn-secondary">← Volver</a>
+    </div>
+    <form method="POST">
+        <label>Nombre completo:</label>
+        <input type="text" name="nombre" value="{{ empleado[1] }}" required>
+
+        <label>Cedula:</label>
+        <input type="text" name="cedula" value="{{ empleado[2] }}" required>
+
+        <label>Cargo:</label>
+        <input type="text" name="cargo" value="{{ empleado[3] }}" required>
+
+        <label>Valor por dia:</label>
+        <input type="number" name="valor_dia" value="{{ empleado[4] }}" required>
+
+        <label>Numero de emergencia:</label>
+        <input type="text" name="numero_emergencia" value="{{ empleado[5] }}">
+
+        <button type="submit">Guardar cambios</button>
+    </form>
+</div>
+{% endblock %}

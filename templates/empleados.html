@@ -2,8 +2,10 @@
 
 {% block content %}
     <div class="container">
-        <h1>Empleados</h1>
-        <a href="/agregar_empleado" class="btn">+ Agregar Empleado</a>
+        <div class="page-header">
+            <h1>Empleados</h1>
+            <a href="/agregar_empleado" class="btn">+ Agregar Empleado</a>
+        </div>
         
         <div class="table-wrapper">
             <table>
@@ -14,6 +16,8 @@
                         <th>Cargo</th>
                         <th>Valor Dia</th>
                         <th>Emergencia</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,6 +28,24 @@
                         <td>{{ empleado[3] }}</td>
                         <td>{{ empleado[4] }}</td>
                         <td>{{ empleado[5] }}</td>
+                        <td>
+                            {% if empleado[6] %}
+                                <span class="badge badge-success">Activo</span>
+                            {% else %}
+                                <span class="badge badge-warning">Suspendido</span>
+                            {% endif %}
+                        </td>
+                        <td style="display:flex; gap:8px;">
+                            <a href="/editar_empleado/{{ empleado[0] }}" class="btn btn-secondary" style="padding:6px 12px; font-size:12px;">✏️ Editar</a>
+                            <form method="POST" action="/suspender_empleado/{{ empleado[0] }}">
+                                <button type="submit" style="padding:6px 12px; font-size:12px; background:var(--warning);">
+                                    {% if empleado[6] %}⏸️ Suspender{% else %}▶️ Activar{% endif %}
+                                </button>
+                            </form>
+                            <form method="POST" action="/eliminar_empleado/{{ empleado[0] }}" onsubmit="return confirm('¿Seguro que quieres eliminar este empleado?')">
+                                <button type="submit" style="padding:6px 12px; font-size:12px; background:var(--danger);">🗑️ Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
